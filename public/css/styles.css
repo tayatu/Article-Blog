@@ -1,0 +1,77 @@
+body {
+     background-color: #E4E9FD;
+     background-image: url("images/background.jpg");
+     font-family: 'helvetica neue';
+     min-height: 1000px;
+}
+
+h1 {
+     text-align: center;
+     font-size: 80px;
+     padding: 30px;
+}
+h2 {
+     text-align: center;
+     padding: 10px;
+     margin-top: 20px;
+}
+h3 {
+     text-align: left;
+     padding: 0;
+     margin-top: 0;
+}
+p {
+     margin: 0;
+     padding: 10px;
+     font-size: 20px;
+     font-weight: 200;
+     color: #00204a;
+}
+
+input[type="text"] {
+     text-align: center;
+     height: 60px;
+     top: 10px;
+     border: none;
+     font-size: 20px;
+     font-weight: 200;
+     width: 313px;
+}
+
+/* .aaa {
+     font-size: 40px;
+     margin-right: 100px;
+} */
+
+.buttons {
+     margin-left: 100px;
+     width:20%;
+}
+
+.btnIndex {
+     display: block;
+     margin-bottom: 5px;
+}
+.btn{
+     width: 150px;
+}
+
+.card {
+     border-left-width: 0;
+     margin-bottom: 40px;
+     margin-top: 40px;
+     border: 20px;
+     background-image: url("images/card.jpg");
+}
+.card-body{
+     padding:15px 25px;
+}
+.container{
+
+     margin-top: 60px;
+}
+.content {
+
+    margin-right: 100px;
+    width: 45%;
+}

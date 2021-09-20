@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+<div class="container mt-5">
+<h1><em>Register</em></h1>
+
+<%function myFunction() {%>
+      <div class="alert alert-warning" role="alert">
+      <%=errorMessage%>
+      </div>
+<%}%>
+<%if(flag==1){%>
+     <%flag=0;%>
+     <% myFunction(); %>
+<%}%>
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Makes POST request to /register route -->
+          <form action="/register" method="POST">
+            <div class="form-group">
+              <label for="email"><h2>Username</h2></label>
+              <input type="text" class="form-control" name="username" placeholder="Username" required="true">
+            </div>
+            <div class="form-group">
+              <label for="password"><h2>Password</h2></label>
+              <input type="password" class="form-control" name="password" placeholder="Passwaord" required="true">
+            </div>
+            <button type="submit" class="btn btn-dark btn-side"><h5>Register</h5></button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
+            <i class="fab fa-google"></i>
+            <h5>Sign Up with Google</h5>
+          </a>
+        </div>
+        <a class="btn btn-light btn-index btn-lg" href="/login" role="button"><h5>Login</h5></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<%- include('partials/header') %>

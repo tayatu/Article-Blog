@@ -1,0 +1,15 @@
+<%- include("partials/header") -%>
+  <div class="container">
+    <h1 class="mb-4"><%= article.title %></h1>
+    <div class="mb-4 h4">
+      <b><%= article.createdAt.toLocaleDateString() %></b>
+      <h3><%=article.description%></h3>
+    </div>
+    <a href="/articles" class="btn btn-secondary mb-2 ">All Articles</a>
+
+    <div>
+      <%- article.sanitizedHtml %>
+    </div>
+  </div>
+</body>
+</html>

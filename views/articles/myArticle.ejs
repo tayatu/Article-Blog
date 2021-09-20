@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+     <meta charset="utf-8">
+     <title>Blog Website</title>
+     <meta charset="utf-8">
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+     <link rel="stylesheet" href="/css/styles.css">
+     <style>
+          body {
+               background-image: url("/css/images/blog.jpg");
+               font-family: 'helvetica neue';
+          }
+     </style>
+
+<body>
+     <div class="container">
+          <h1>My Articles</h1>
+          <a href="articles" class="btnIndex btn btn-info">All Articles</a>
+          <% var flag=0; %>
+          <% articles.forEach(article => { %>
+
+          <% if(article.username===sessionID){ %>
+          <%  flag=1; %>
+          <div class="card">
+               <div class="card-body">
+                    <div class="list-inline-item content">
+                         <h4 class="card-title h1"><%= article.title %></h4>
+                         <div class="card-subtitle text-muted mb-3 h6">
+                              <%= article.createdAt.toLocaleDateString() %>
+                         </div>
+                         <div class="card-text mb-2 h5"><%= article.description %></div>
+                    </div>
+
+                    <div class="buttons list-inline-item">
+                         <a href="<%= article.slug %>" class="btnIndex btn btn-primary">Read More</a>
+                         <a href="edit/<%= article.id %>" class="btnIndex btn btn-info">Edit</a>
+                         <form action="/articles/<%= article.id %>?_method=DELETE" method="POST" class="d-inline">
+                              <button type="submit" class="btnIndex btn btn-danger">Delete</button>
+                         </form>
+                    </div>
+               </div>
+          </div>
+          <% } %>
+          <% }) %>
+          <% if(flag==0){ %>
+
+          <h2>You haven't posted anything</h2>
+          <h2>Add a <a href="new" class=" btn btn-primary">New Article</a></h2>
+
+
+          <% } %>
+     </div>
+</body>
+
+</html>
