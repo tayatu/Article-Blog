@@ -9,8 +9,10 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
+const flash = require('express-flash')
 const articleRouter = require('./routes/articles')
 const methodOverride = require('method-override')
+
 const Article = require('./models/article')
 const User = require("./models/user")
 
@@ -21,26 +23,32 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(flash())
 app.use(methodOverride('_method'))
 app.use(session({
-  secret: process.env.SECRET,
+  secret: "Mysecret",
   resave: false,
   saveUninitialized: false
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(methodOverride('_method'))
 
-mongoose.connect("mongodb+srv://sarthak_paliwal:sarthak123@blogdb.rt7uc.mongodb.net/blogDB", {
-     useNewUrlParser: true,
-     useUnifiedTopology: true
-});
-// mongoose.connect('mongodb://localhost/userDB', {
-//   useNewUrlParser: true, useUnifiedTopology: true
+// mongoose.connect("mongodb+srv://sarthak_paliwal:sarthak123@blogdb.rt7uc.mongodb.net/?retryWrites=true&w=majority", {
+//      useNewUrlParser: true,
+//      useUnifiedTopology: true
 // });
+
+mongoose.connect('mongodb://localhost/userDB', {
+  useNewUrlParser: true, useUnifiedTopology: true
+});
+
+
 passport.use(User.createStrategy());
 
 passport.serializeUser(function(user, done) {
+
   done(null, user.id);
 });
 
@@ -53,7 +61,9 @@ passport.deserializeUser(function(id, done) {
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://young-gorge-34969.herokuapp.com/auth/google/blog"
+    // callbackURL: "https://young-gorge-34969.herokuapp.com/auth/google/blog"
+    callbackURL:"http://localhost:3000/auth/google/article",
+    userProfileURL:"https://www.googleapis.com/oauth2/v3/userinfo"
   },
   function(accessToken, refreshToken, profile, cb) {
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
@@ -76,31 +86,31 @@ app.get("/auth/google",
   passport.authenticate('google', { scope: ["profile"] })
 );
 
-app.get("/auth/google/blog",
+app.get("/auth/google/article",
   passport.authenticate('google', { failureRedirect: "/login" }),
   function(req, res) {
     res.redirect("/articles");
   });
 
 app.get("/login", function(req, res){
-     let flag=0;
-     let errorMessage=" ";
   if (req.isAuthenticated()){
     res.redirect("/articles");
   } else {
-    res.render("login",{flag:flag ,errorMessage:errorMessage});
+    res.render("login");
   }
 });
 
 app.get("/register", function(req, res){
-     let flag=0;
-     let errorMessage=" ";
      if (req.isAuthenticated()){
        res.redirect("/articles");
      } else {
-       res.render("register",{flag:flag ,errorMessage:errorMessage});
+       res.render("register");
      }
 
+});
+
+app.get("/tryAgain", function(req, res){
+    res.render("tryAgain");
 });
 
 app.get("/articles" , async (req, res) => {
@@ -130,49 +140,39 @@ app.post("/register", function(req, res,err){
      let Users=new User({username : req.body.username});
      var plainTextPassword=req.body.password;
      var textUsername=req.body.username;
-
-     if(textUsername.length<=5){
-          errorMessage='Username must be of 6 characters' ;
-          flag=1;
-          res.render("register",{flag:flag ,errorMessage:errorMessage});
-     }
-	if (plainTextPassword.length < 5) {
-		 errorMessage ='Password should be atleast 6 characters';
-           flag=1;
-           res.render("register",{flag:flag ,errorMessage:errorMessage});
-	}
      User.register(Users, req.body.password, function(err, user){
           if (err) {
                console.log(err);
-               flag=1;
-               errorMessage="User already exists";
-               res.render("register",{flag:flag ,errorMessage:errorMessage});
+               res.render("register");
           } else {
                passport.authenticate("local")(req, res, function(){
-               res.redirect("/articles");
+                res.redirect("/articles");
                });
+
+
           }
      });
 });
 
-app.post("/login", function(req, res){
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/tryAgain',
+  failureFlash: true
+}))
 
-  const user = new User({
-    username: req.body.username,
-    password: req.body.password
-  });
-  req.login(user, function(err){
-    if (err) {
-      console.log(err);
-    } else {
-        passport.authenticate("local")(req, res, function(){
-         res.redirect("/articles");
-      });
-    }
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.redirect('/login')
+}
 
-  });
-
-});
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/')
+  }
+  next()
+}
 
 app.use('/articles', articleRouter)
 
