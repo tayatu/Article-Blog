@@ -35,15 +35,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'))
 
-// mongoose.connect("mongodb+srv://sarthak_paliwal:sarthak123@blogdb.rt7uc.mongodb.net/?retryWrites=true&w=majority", {
-//      useNewUrlParser: true,
-//      useUnifiedTopology: true
-// });
-
-mongoose.connect('mongodb://localhost/userDB', {
-  useNewUrlParser: true, useUnifiedTopology: true
-});
-
+const connect = () => {
+  mongoose
+    .connect(process.env.MONGO)
+    .then(() => {
+      console.log("Connected to DataBase");
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
 
 passport.use(User.createStrategy());
 
@@ -179,4 +180,5 @@ app.use('/articles', articleRouter)
 let port=process.env.PORT;
 app.listen(port || 3000, function() {
   console.log("Server started on port 3000.");
+  connect();
 });
