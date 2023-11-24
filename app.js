@@ -63,7 +63,7 @@ passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     // callbackURL: "https://young-gorge-34969.herokuapp.com/auth/google/blog"
-    callbackURL:"http://localhost:3000/auth/google/article",
+    callbackURL:"https://blog-writing.onrender.com/auth/google/article",
     userProfileURL:"https://www.googleapis.com/oauth2/v3/userinfo"
   },
   function(accessToken, refreshToken, profile, cb) {
